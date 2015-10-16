@@ -5,8 +5,8 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-from paypal.standard.widgets import ValueHiddenInput, ReservedValueHiddenInput
-from paypal.standard.conf import (POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT,
+from .widgets import ValueHiddenInput, ReservedValueHiddenInput
+from .conf import (POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT,
                                   IMAGE, SUBSCRIPTION_IMAGE, DONATION_IMAGE,
                                   SANDBOX_IMAGE, SUBSCRIPTION_SANDBOX_IMAGE, DONATION_SANDBOX_IMAGE)
 

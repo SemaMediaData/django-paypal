@@ -4,8 +4,10 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 
-from paypal.standard.helpers import duplicate_txn_id, check_secret
-from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
+from encrypted_fields import EncryptedCharField, EncryptedEmailField, EncryptedTextField
+
+from .helpers import duplicate_txn_id, check_secret
+from .conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
 
 ST_PP_ACTIVE = 'Active'
 ST_PP_CANCELLED = 'Cancelled'
@@ -28,13 +30,12 @@ ST_PP_UNCLAIMED = 'Unclaimed'
 ST_PP_UNCLEARED = 'Uncleared'
 ST_PP_VOIDED = 'Voided'
 
+DEFAULT_ENCODING = 'windows-1252'  # PayPal seems to normally use this.
+
 try:
     from idmapper.models import SharedMemoryModel as Model
 except ImportError:
     Model = models.Model
-
-
-DEFAULT_ENCODING = 'windows-1252'  # PayPal seems to normally use this.
 
 
 class PayPalStandardBase(Model):
@@ -72,35 +73,35 @@ class PayPalStandardBase(Model):
     # TRANSACTION_ENTITY_CHOICES = "auth reauth order payment".split()
 
     # Transaction and Notification-Related Variables
-    business = models.CharField(max_length=127, blank=True, help_text="Email where the money was sent.")
+    business = EncryptedCharField(max_length=127, blank=True, help_text="Email where the money was sent.")
     charset = models.CharField(max_length=255, blank=True)
-    custom = models.CharField(max_length=255, blank=True)
+    custom = EncryptedCharField(max_length=255, blank=True)
     notify_version = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     parent_txn_id = models.CharField("Parent Transaction ID", max_length=19, blank=True)
-    receiver_email = models.EmailField(blank=True)
-    receiver_id = models.CharField(max_length=255, blank=True)  # 258DLEHY2BDK6
+    receiver_email = EncryptedEmailField(blank=True)
+    receiver_id = EncryptedCharField(max_length=255, blank=True)  # 258DLEHY2BDK6
     residence_country = models.CharField(max_length=2, blank=True)
     test_ipn = models.BooleanField(default=False, blank=True)
     txn_id = models.CharField("Transaction ID", max_length=255, blank=True, help_text="PayPal transaction ID.",
                               db_index=True)
-    txn_type = models.CharField("Transaction Type", max_length=255, blank=True, help_text="PayPal transaction type.")
-    verify_sign = models.CharField(max_length=255, blank=True)
+    txn_type = EncryptedCharField("Transaction Type", max_length=255, blank=True, help_text="PayPal transaction type.")
+    verify_sign = EncryptedCharField(max_length=255, blank=True)
 
     # Buyer Information Variables
-    address_country = models.CharField(max_length=64, blank=True)
-    address_city = models.CharField(max_length=40, blank=True)
-    address_country_code = models.CharField(max_length=64, blank=True, help_text="ISO 3166")
-    address_name = models.CharField(max_length=128, blank=True)
-    address_state = models.CharField(max_length=40, blank=True)
-    address_status = models.CharField(max_length=255, blank=True)
-    address_street = models.CharField(max_length=200, blank=True)
-    address_zip = models.CharField(max_length=20, blank=True)
-    contact_phone = models.CharField(max_length=20, blank=True)
-    first_name = models.CharField(max_length=64, blank=True)
-    last_name = models.CharField(max_length=64, blank=True)
-    payer_business_name = models.CharField(max_length=127, blank=True)
-    payer_email = models.CharField(max_length=127, blank=True)
-    payer_id = models.CharField(max_length=13, blank=True)
+    address_country = EncryptedCharField(max_length=64, blank=True)
+    address_city = EncryptedCharField(max_length=40, blank=True)
+    address_country_code = EncryptedCharField(max_length=64, blank=True, help_text="ISO 3166")
+    address_name = EncryptedCharField(max_length=128, blank=True)
+    address_state = EncryptedCharField(max_length=40, blank=True)
+    address_status = EncryptedCharField(max_length=255, blank=True)
+    address_street = EncryptedCharField(max_length=200, blank=True)
+    address_zip = EncryptedCharField(max_length=20, blank=True)
+    contact_phone = EncryptedCharField(max_length=20, blank=True)
+    first_name = EncryptedCharField(max_length=64, blank=True)
+    last_name = EncryptedCharField(max_length=64, blank=True)
+    payer_business_name = EncryptedCharField(max_length=127, blank=True)
+    payer_email = EncryptedCharField(max_length=127, blank=True)
+    payer_id = EncryptedCharField(max_length=13, blank=True)
 
     # Payment Information Variables
     auth_amount = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
@@ -108,10 +109,10 @@ class PayPalStandardBase(Model):
     auth_id = models.CharField(max_length=19, blank=True)
     auth_status = models.CharField(max_length=255, blank=True)
     exchange_rate = models.DecimalField(max_digits=64, decimal_places=16, default=0, blank=True, null=True)
-    invoice = models.CharField(max_length=127, blank=True)
-    item_name = models.CharField(max_length=127, blank=True)
-    item_number = models.CharField(max_length=127, blank=True)
-    mc_currency = models.CharField(max_length=32, default="USD", blank=True)
+    invoice = EncryptedCharField(max_length=127, blank=True)
+    item_name = EncryptedCharField(max_length=127, blank=True)
+    item_number = EncryptedCharField(max_length=127, blank=True)
+    mc_currency = EncryptedCharField(max_length=32, default="USD", blank=True)
     mc_fee = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     mc_gross = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     mc_handling = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
@@ -123,7 +124,7 @@ class PayPalStandardBase(Model):
     payer_status = models.CharField(max_length=255, blank=True)
     payment_date = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
     payment_gross = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
-    payment_status = models.CharField(max_length=255, blank=True)
+    payment_status = EncryptedCharField(max_length=255, blank=True)
     payment_type = models.CharField(max_length=255, blank=True)
     pending_reason = models.CharField(max_length=255, blank=True)
     protection_eligibility = models.CharField(max_length=255, blank=True)
@@ -135,10 +136,10 @@ class PayPalStandardBase(Model):
     shipping = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     shipping_method = models.CharField(max_length=255, blank=True)
     tax = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
-    transaction_entity = models.CharField(max_length=255, blank=True)
+    transaction_entity = EncryptedCharField(max_length=255, blank=True)
 
     # Auction Variables
-    auction_buyer_id = models.CharField(max_length=64, blank=True)
+    auction_buyer_id = EncryptedCharField(max_length=64, blank=True)
     auction_closing_date = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
     auction_multi_item = models.IntegerField(blank=True, default=0, null=True)
     for_auction = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
@@ -151,11 +152,11 @@ class PayPalStandardBase(Model):
     outstanding_balance = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     payment_cycle = models.CharField(max_length=255, blank=True) #Monthly
     period_type = models.CharField(max_length=255, blank=True)
-    product_name = models.CharField(max_length=255, blank=True)
+    product_name = EncryptedCharField(max_length=255, blank=True)
     product_type = models.CharField(max_length=255, blank=True)
     profile_status = models.CharField(max_length=255, blank=True)
-    recurring_payment_id = models.CharField(max_length=255, blank=True)  # I-FA4XVST722B9
-    rp_invoice_id = models.CharField(max_length=127, blank=True)  # 1335-7816-2936-1451
+    recurring_payment_id = EncryptedCharField(max_length=255, blank=True)  # I-FA4XVST722B9
+    rp_invoice_id = EncryptedCharField(max_length=127, blank=True)  # 1335-7816-2936-1451
     time_created = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
 
     # Subscription Variables
@@ -165,7 +166,7 @@ class PayPalStandardBase(Model):
     mc_amount1 = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     mc_amount2 = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
     mc_amount3 = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
-    password = models.CharField(max_length=24, blank=True)
+    password = EncryptedCharField(max_length=24, blank=True)
     period1 = models.CharField(max_length=255, blank=True)
     period2 = models.CharField(max_length=255, blank=True)
     period3 = models.CharField(max_length=255, blank=True)
@@ -175,22 +176,22 @@ class PayPalStandardBase(Model):
     retry_at = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
     subscr_date = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
     subscr_effective = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
-    subscr_id = models.CharField(max_length=19, blank=True)
-    username = models.CharField(max_length=64, blank=True)
+    subscr_id = EncryptedCharField(max_length=19, blank=True)
+    username = EncryptedCharField(max_length=64, blank=True)
 
     # Billing Agreement Variables
     mp_id = models.CharField(max_length=128, blank=True, null=True) # B-0G433009BJ555711U
 
     # Dispute Resolution Variables
     case_creation_date = models.DateTimeField(blank=True, null=True, help_text="HH:MM:SS DD Mmm YY, YYYY PST")
-    case_id = models.CharField(max_length=255, blank=True)
+    case_id = EncryptedCharField(max_length=255, blank=True)
     case_type = models.CharField(max_length=255, blank=True)
 
     # Variables not categorized
-    receipt_id = models.CharField(max_length=255, blank=True)  # 1335-7816-2936-1451
+    receipt_id = EncryptedCharField(max_length=255, blank=True)  # 1335-7816-2936-1451
     currency_code = models.CharField(max_length=32, default="USD", blank=True)
     handling_amount = models.DecimalField(max_digits=64, decimal_places=2, default=0, blank=True, null=True)
-    transaction_subject = models.CharField(max_length=255, blank=True)
+    transaction_subject = EncryptedCharField(max_length=255, blank=True)
 
     # @@@ Mass Pay Variables (Not Implemented, needs a separate model, for each transaction x)
     # fraud_managment_pending_filters_x = models.CharField(max_length=255, blank=True)
@@ -213,8 +214,8 @@ class PayPalStandardBase(Model):
     flag = models.BooleanField(default=False, blank=True)
     flag_code = models.CharField(max_length=16, blank=True)
     flag_info = models.TextField(blank=True)
-    query = models.TextField(blank=True)  # What Paypal sent to us initially
-    response = models.TextField(blank=True)  # What we got back from our request
+    query = EncryptedTextField(blank=True)  # What Paypal sent to us initially
+    response = EncryptedTextField(blank=True)  # What we got back from our request
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

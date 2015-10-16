@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import encrypted_fields.fields
 
 
 class Migration(migrations.Migration):
@@ -14,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='address_status',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='case_id',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
@@ -49,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='payment_status',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
@@ -84,7 +85,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='product_name',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
@@ -109,27 +110,27 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='receipt_id',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
             name='receiver_email',
-            field=models.EmailField(max_length=254, blank=True),
+            field=encrypted_fields.fields.EncryptedEmailField(max_length=254, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
             name='receiver_id',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
             name='recurring_payment_id',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
             name='transaction_entity',
-            field=models.CharField(max_length=255, blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(max_length=255, blank=True),
         ),
         migrations.AlterField(
             model_name='paypalipn',
@@ -139,6 +140,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paypalipn',
             name='txn_type',
-            field=models.CharField(help_text=b'PayPal transaction type.', max_length=255, verbose_name=b'Transaction Type', blank=True),
+            field=encrypted_fields.fields.EncryptedCharField(help_text=b'PayPal transaction type.', max_length=255, verbose_name=b'Transaction Type', blank=True),
         ),
     ]

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from paypal.standard.forms import PayPalStandardBaseForm
-from paypal.standard.ipn.models import PayPalIPN
+from ..forms import PayPalStandardBaseForm
+from .models import PayPalIPN
 
 
 class PayPalIPNForm(PayPalStandardBaseForm):

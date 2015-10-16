@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 
 from django.dispatch import Signal
 
-from paypal.standard.signals import DeprecatedSignal
+from ..signals import DeprecatedSignal
 
 # Sent when a validated, non-duplicated IPN is received.
 valid_ipn_received = Signal()
