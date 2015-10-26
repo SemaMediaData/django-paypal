@@ -8,8 +8,8 @@ from django.conf import settings
 from django.http import QueryDict
 from six.moves.urllib.parse import unquote_plus
 
-from paypal.standard.models import PayPalStandardBase
-from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
+from apps.django_paypal.paypal.standard.models import PayPalStandardBase
+from apps.django_paypal.paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
 
 # ### Todo: Move this logic to conf.py:
 # if paypal.standard.pdt is in installed apps
@@ -56,7 +56,7 @@ class PayPalPDT(PayPalStandardBase):
 
     def _verify_postback(self):
         # ### Now we don't really care what result was, just whether a flag was set or not.
-        from paypal.standard.pdt.forms import PayPalPDTForm
+        from apps.django_paypal.paypal.standard.pdt.forms import PayPalPDTForm
 
         response_list = self.response.split('\n')
         response_dict = {}

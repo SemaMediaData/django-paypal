@@ -11,11 +11,11 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 
-from paypal.pro.fields import CreditCardField
-from paypal.pro.helpers import PayPalWPP, PayPalError, VERSION
-from paypal.pro.exceptions import PayPalFailure
-from paypal.pro.views import PayPalPro
-from paypal.pro.signals import payment_was_successful
+from ...pro.fields import CreditCardField
+from ...pro.helpers import PayPalWPP, PayPalError, VERSION
+from ...pro.exceptions import PayPalFailure
+from ...pro.views import PayPalPro
+from ...pro.signals import payment_was_successful
 
 from .settings import TEMPLATES, TEMPLATE_DIRS
 

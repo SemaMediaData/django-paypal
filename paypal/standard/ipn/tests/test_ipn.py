@@ -11,9 +11,9 @@ from django.utils import timezone
 from six import b, text_type
 from six.moves.urllib.parse import urlencode
 
-from paypal.standard.models import ST_PP_CANCELLED
-from paypal.standard.ipn.models import PayPalIPN
-from paypal.standard.ipn.signals import (payment_was_successful,
+from apps.django_paypal.paypal.standard.models import ST_PP_CANCELLED
+from apps.django_paypal.paypal.standard.ipn.models import PayPalIPN
+from apps.django_paypal.paypal.standard.ipn.signals import (payment_was_successful,
                                          payment_was_flagged, payment_was_refunded, payment_was_reversed,
                                          recurring_skipped, recurring_failed,
                                          recurring_create, recurring_payment, recurring_cancel,
@@ -59,7 +59,7 @@ IPN_POST_PARAMS = {
 }
 
 
-@override_settings(ROOT_URLCONF='paypal.standard.ipn.tests.test_urls')
+@override_settings(ROOT_URLCONF='apps.django_paypal.paypal.standard.ipn.tests.test_urls')
 class IPNTestBase(TestCase):
     def setUp(self):
         self.valid_ipn_received_receivers = valid_ipn_received.receivers
@@ -380,7 +380,7 @@ class IPNPostbackTest(IPNTestBase):
         self.assertFlagged({}, u'Invalid postback. (INVALID)')
 
 
-@override_settings(ROOT_URLCONF='paypal.standard.ipn.tests.test_urls',
+@override_settings(ROOT_URLCONF='apps.django_paypal.paypal.standard.ipn.tests.test_urls',
                    PAYPAL_RECEIVER_EMAIL='seller@paypalsandbox.com')
 class IPNSimulatorTests(TestCase):
 
