@@ -12,7 +12,7 @@ class PayPalIPNAdmin(admin.ModelAdmin):
                 "flag", "txn_id", "txn_type", "payment_status", "payment_date",
                 "transaction_entity", "reason_code", "pending_reason",
                 "mc_currency", "mc_gross", "mc_fee", "mc_handling", "mc_shipping",
-                "auth_status", "auth_amount", "auth_exp", "auth_id"
+                "auth_status", "auth_amount", "auth_exp", "auth_id", "subscr_id"
             ]
         }),
         ("Address", {
